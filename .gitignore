@@ -1,0 +1,119 @@
+# ===================
+# 依赖目录（必须忽略）
+# ===================
+node_modules/
+*/node_modules/
+*/*/node_modules/
+
+# Java 后端编译输出（必须忽略）
+server/target/
+*/target/
+
+# ===================
+# 操作系统生成文件
+# ===================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===================
+# IDE 配置文件（建议忽略）
+# ===================
+# VSCode
+.vscode/
+*.code-workspace
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Eclipse
+.classpath
+.project
+.settings/
+bin/
+
+# NetBeans
+nbproject/
+nb-configuration.xml
+
+# ===================
+# 日志文件
+# ===================
+*.log
+logs/
+*/logs/
+
+# ===================
+# 环境变量和密钥（重要：安全相关）
+# ===================
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+*.crt
+secrets/
+config/keys/
+
+# ===================
+# 运行时/临时文件
+# ===================
+*.tmp
+*.temp
+*.cache
+dist/
+build/
+*.pid
+*.seed
+
+# ===================
+# 测试覆盖率报告
+# ===================
+coverage/
+.nyc_output/
+*.test-results/
+
+# ===================
+# 数据库文件
+# ===================
+*.db
+*.sqlite
+*.sqlite3
+
+# ===================
+# 打包文件（通常不提交）
+# ===================
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# ===================
+# 前端构建产物
+# ===================
+admin-web/dist/
+admin-web/.vite/
+user-h5/dist/
+user-h5/.vite/
+
+# ===================
+# 后端特定
+# ===================
+server/.mvn/
+mvnw
+mvnw.cmd
+*.log
+application-local.properties
+application-dev.properties
+
+# ===================
+# Claude/AI 辅助工具
+# ===================
+.claude/
+.claudeai/

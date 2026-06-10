@@ -1,0 +1,65 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: cloud-museum-server
+
+  # 数据源配置
+  datasource:
+    url: jdbc:mysql://localhost:3306/cloud_museum?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      connection-timeout: 30000
+
+  # JPA 配置
+  jpa:
+    hibernate:
+      ddl-auto: none # 使用SQL脚本初始化，生产环境建议none
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+
+  # Redis 配置
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+      timeout: 5000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+
+  # JSON 日期格式
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+
+# JWT 配置
+jwt:
+  secret: CloudMuseum2024SecretKeyForHuaweiCompetitionGroup
+  expiration: 86400000 # 24小时 (毫秒)
+
+# ========== DeepSeek AI 配置 ==========
+# 替换为你的 DeepSeek API Key（支持环境变量覆盖）
+deepseek:
+  api-key: sk-5b8e35d0616b43839fa6ed1cd15225f6
+  base-url: https://api.deepseek.com/v1
+  model: deepseek-chat
+
+# 日志
+logging:
+  level:
+    com.cloudmuseum: DEBUG
+    org.springframework.security: INFO
