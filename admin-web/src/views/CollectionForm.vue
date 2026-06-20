@@ -57,6 +57,19 @@
           <img v-if="showPreview && form.coverImage" :src="form.coverImage" style="max-width:200px;margin-top:8px;border-radius:4px;" />
         </el-form-item>
 
+        <el-form-item label="3D 模型" prop="modelUrl">
+          <el-input v-model="form.modelUrl" placeholder="请输入 GLB 模型 URL（可选）">
+            <template #append>
+              <el-tooltip content="支持 .glb 格式，可从 Sketchfab / Free3D 等平台获取" placement="top">
+                <el-icon><InfoFilled /></el-icon>
+              </el-tooltip>
+            </template>
+          </el-input>
+          <div v-if="form.modelUrl" style="margin-top:8px;">
+            <el-tag type="success" size="small">已配置 3D 模型</el-tag>
+          </div>
+        </el-form-item>
+
         <el-form-item label="藏品描述" prop="description">
           <el-input
             v-model="form.description"
@@ -106,6 +119,7 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import { InfoFilled } from '@element-plus/icons-vue'
 import { getCategoryList } from '@/api/category'
 import { createCollection, updateCollection } from '@/api/collection'
 import request from '@/api/index'
@@ -131,6 +145,7 @@ const form = reactive({
   description: '',
   culturalSignificance: '',
   coverImage: '',
+  modelUrl: '',
   status: 'on_display',
   isFeatured: 0
 })

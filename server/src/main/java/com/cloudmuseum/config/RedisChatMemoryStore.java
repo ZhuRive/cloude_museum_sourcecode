@@ -1,6 +1,5 @@
 package com.cloudmuseum.config;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.ChatMessageDeserializer;
@@ -15,7 +14,6 @@ import java.util.List;
 /**
  * LangChain4j ChatMemoryStore 的 Redis 实现
  * 将对话历史持久化到 Redis，支持 24 小时过期
- * 用于多轮对话的上下文记忆
  */
 @Component
 public class RedisChatMemoryStore implements ChatMemoryStore {

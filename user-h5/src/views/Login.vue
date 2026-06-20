@@ -1,10 +1,17 @@
 <template>
   <div class="login-page">
+    <!-- 水墨风格头部 -->
     <div class="login-header">
-      <h1 class="login-title">云博物馆</h1>
-      <p class="login-subtitle">登录后即可预约参观</p>
+      <div class="header-pattern"></div>
+      <div class="header-content">
+        <div class="header-emblem">🏛️</div>
+        <h1 class="header-title">陕忆 · 云博</h1>
+        <p class="header-subtitle">登录后即可预约参观</p>
+        <div class="header-line"></div>
+      </div>
     </div>
 
+    <!-- 登录表单 -->
     <div class="login-form">
       <van-form @submit="handleLogin">
         <van-cell-group inset>
@@ -16,13 +23,14 @@
             :rules="[{ required: true, pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号' }]"
             maxlength="11"
             type="tel"
+            label-class="form-label"
           >
             <template #button>
               <van-button
                 size="small"
                 :disabled="codeBtnDisabled"
                 @click.prevent="handleSendCode"
-                color="#4299e1"
+                :color="codeBtnDisabled ? 'var(--paper-dark)' : 'var(--gold)'"
               >
                 {{ codeBtnText }}
               </van-button>
@@ -35,25 +43,26 @@
             placeholder="请输入验证码"
             maxlength="6"
             :rules="[{ required: true, message: '请输入验证码' }]"
+            label-class="form-label"
           />
         </van-cell-group>
 
-        <div style="margin: 20px 16px;">
+        <div class="submit-wrap">
           <van-button
             round
             block
             type="primary"
             native-type="submit"
-            color="linear-gradient(135deg, #2d6a9f, #4299e1)"
             :loading="loading"
+            class="login-btn"
           >
             登录
           </van-button>
         </div>
       </van-form>
 
-      <p class="login-tip">未注册的手机号将自动创建账号</p>
-      <p class="login-dev-tip">开发环境验证码: 123456</p>
+      <p class="form-tip">未注册的手机号将自动创建账号</p>
+      <p class="form-dev-tip">开发环境验证码：123456</p>
     </div>
   </div>
 </template>
@@ -110,7 +119,6 @@ const handleLogin = async () => {
       localStorage.setItem('userToken', res.data.token)
       localStorage.setItem('userInfo', JSON.stringify(res.data.userInfo))
       showToast('登录成功')
-      // 跳回原页面或首页
       const redirect = route.query.redirect || '/home'
       router.replace(redirect)
     }
@@ -125,36 +133,95 @@ const handleLogin = async () => {
 <style scoped>
 .login-page {
   min-height: 100vh;
-  background: #f5f7fa;
+  background: var(--paper);
 }
+
+/* ---- 水墨头部 ---- */
 .login-header {
-  background: linear-gradient(135deg, #1a365d 0%, #2d6a9f 50%, #4299e1 100%);
-  padding: 60px 20px 40px;
+  position: relative;
+  background: linear-gradient(160deg, #1a1a1a 0%, #2C2C2C 40%, #3B4A4A 100%);
+  padding: 48px 20px 40px;
   text-align: center;
+  overflow: hidden;
 }
-.login-title {
-  color: #fff;
-  font-size: 28px;
-  font-weight: bold;
+.header-pattern {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 30% 70%, rgba(184, 148, 63, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 30%, rgba(184, 148, 63, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+.header-content {
+  position: relative;
+  z-index: 1;
+}
+.header-emblem {
+  font-size: 36px;
   margin-bottom: 8px;
 }
-.login-subtitle {
-  color: rgba(255,255,255,0.8);
+.header-title {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 900;
+  font-size: 26px;
+  color: var(--gold-light);
+  letter-spacing: 6px;
+  margin-bottom: 8px;
+}
+.header-subtitle {
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 2px;
+}
+.header-line {
+  width: 40px;
+  height: 2px;
+  background: var(--gold);
+  margin: 14px auto 0;
+  border-radius: 1px;
+}
+
+/* ---- 表单 ---- */
+.login-form {
+  margin-top: -16px;
+  padding: 0 16px;
+}
+.login-form :deep(.van-cell-group) {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--card);
+}
+.login-form :deep(.van-field__label) {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 14px;
+  color: var(--text-primary);
+  width: 70px;
+}
+.login-form :deep(.van-field__body input) {
   font-size: 14px;
 }
-.login-form {
-  margin-top: -20px;
+.submit-wrap {
+  margin: 24px 0 16px;
 }
-.login-tip {
-  text-align: center;
-  color: #999;
-  font-size: 12px;
-  margin-top: 12px;
+.login-btn {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 15px;
+  letter-spacing: 4px;
+  height: 44px;
+  border: none;
+  box-shadow: 0 4px 12px var(--gold-glow);
 }
-.login-dev-tip {
+.form-tip {
   text-align: center;
-  color: #4299e1;
+  color: var(--text-tertiary);
   font-size: 12px;
+  letter-spacing: 1px;
+}
+.form-dev-tip {
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 11px;
   margin-top: 8px;
+  opacity: 0.6;
 }
 </style>

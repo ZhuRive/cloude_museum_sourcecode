@@ -1,14 +1,15 @@
 <template>
   <div class="reservation-page">
-    <van-nav-bar title="预约参观" left-arrow @click-left="router.back()" />
+    <van-nav-bar title="预 约 参 观" left-arrow @click-left="router.back()" />
 
     <div class="page-content">
-      <!-- 提示卡片 -->
+      <!-- 通知卡片 -->
       <div class="notice-card">
-        <van-icon name="info-o" color="#4299e1" size="18" />
-        <span>请至少提前一天预约，参观时请出示预约记录</span>
+        <span class="notice-icon">📋</span>
+        <span class="notice-text">请至少提前一天预约，参观时请出示预约记录</span>
       </div>
 
+      <!-- 预约表单 -->
       <van-form @submit="handleSubmit">
         <van-cell-group inset>
           <van-field
@@ -17,6 +18,7 @@
             label="参观人"
             placeholder="请输入姓名"
             :rules="[{ required: true, message: '请输入姓名' }]"
+            label-class="form-label"
           />
           <van-field
             v-model="form.visitorPhone"
@@ -26,41 +28,46 @@
             type="tel"
             maxlength="11"
             :rules="[{ required: true, pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号' }]"
+            label-class="form-label"
           />
           <van-field
             v-model="form.idCard"
             name="idCard"
-            label="身份证号"
+            label="身份证"
             placeholder="选填"
             maxlength="18"
+            label-class="form-label"
           />
           <van-field
             v-model="form.visitorCount"
             name="visitorCount"
-            label="参观人数"
-            placeholder="请输入人数"
+            label="人数"
+            placeholder="请输入参观人数"
             type="number"
             :rules="[{ required: true, message: '请输入人数' }]"
+            label-class="form-label"
           />
           <van-field
             v-model="form.visitDate"
             is-link
             readonly
             name="visitDate"
-            label="参观日期"
-            placeholder="请选择日期"
+            label="日期"
+            placeholder="请选择参观日期"
             :rules="[{ required: true, message: '请选择日期' }]"
             @click="showDatePicker = true"
+            label-class="form-label"
           />
           <van-field
             v-model="form.visitTimeSlot"
             is-link
             readonly
             name="visitTimeSlot"
-            label="参观时段"
-            placeholder="请选择时段"
+            label="时段"
+            placeholder="请选择参观时段"
             :rules="[{ required: true, message: '请选择时段' }]"
             @click="showTimePicker = true"
+            label-class="form-label"
           />
           <van-field
             v-model="form.notes"
@@ -68,17 +75,18 @@
             label="备注"
             placeholder="选填，特殊需求说明"
             maxlength="500"
+            label-class="form-label"
           />
         </van-cell-group>
 
-        <div style="margin: 20px 16px;">
+        <div class="submit-wrap">
           <van-button
             round
             block
             type="primary"
             native-type="submit"
-            color="linear-gradient(135deg, #2d6a9f, #4299e1)"
             :loading="submitting"
+            class="submit-btn"
           >
             提交预约
           </van-button>
@@ -87,13 +95,14 @@
     </div>
 
     <!-- 日期选择 -->
-    <van-popup v-model:show="showDatePicker" position="bottom">
+    <van-popup v-model:show="showDatePicker" position="bottom" round>
       <van-date-picker
         :min-date="minDate"
         :max-date="maxDate"
         title="选择参观日期"
         @confirm="onDateConfirm"
         @cancel="showDatePicker = false"
+        :columns-top="' '"
       />
     </van-popup>
 
@@ -125,9 +134,8 @@ const submitting = ref(false)
 const showDatePicker = ref(false)
 const showTimePicker = ref(false)
 
-// 计算日期范围：今天到30天后
 const today = new Date()
-const minDate = new Date(today.getTime() + 86400000) // 明天
+const minDate = new Date(today.getTime() + 86400000)
 const maxDate = new Date(today.getTime() + 30 * 86400000)
 
 const timeSlots = [
@@ -151,7 +159,6 @@ const onDateConfirm = ({ selectedValues }) => {
 }
 
 const handleSubmit = async () => {
-  // 检查登录
   const token = localStorage.getItem('userToken')
   if (!token) {
     showToast('请先登录')
@@ -180,23 +187,68 @@ const handleSubmit = async () => {
 <style scoped>
 .reservation-page {
   min-height: 100vh;
-  background: #f5f7fa;
+  background: var(--paper);
 }
 .page-content {
   padding: 12px 0;
 }
+
+/* ---- 通知卡片 ---- */
 .notice-card {
   display: flex;
   align-items: center;
-  gap: 8px;
-  background: #ebf8ff;
-  border: 1px solid #bee3f8;
-  border-radius: 8px;
-  padding: 10px 14px;
+  gap: 10px;
+  background: var(--card);
+  border: 1px solid var(--paper-dark);
+  border-left: 3px solid var(--gold);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
   margin: 0 16px 16px;
   font-size: 12px;
-  color: #2b6cb0;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
 }
+.notice-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.notice-text {
+  line-height: 1.5;
+}
+
+/* ---- 表单 ---- */
+:deep(.van-cell-group) {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--card);
+  margin: 0 16px;
+}
+:deep(.van-field__label) {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 14px;
+  color: var(--text-primary);
+  width: 60px;
+}
+:deep(.van-field__body input) {
+  font-size: 14px;
+}
+:deep(.van-field__control) {
+  color: var(--text-primary);
+}
+
+.submit-wrap {
+  margin: 24px 16px 16px;
+}
+.submit-btn {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 15px;
+  letter-spacing: 4px;
+  height: 44px;
+  border: none;
+  box-shadow: 0 4px 12px var(--gold-glow);
+}
+
+/* ---- 时段选择 ---- */
 .time-slots {
   padding: 16px;
   display: flex;
@@ -204,25 +256,33 @@ const handleSubmit = async () => {
   gap: 12px;
 }
 .time-slot {
-  background: #f7f8fa;
-  border: 2px solid #f7f8fa;
-  border-radius: 10px;
+  background: var(--paper);
+  border: 2px solid var(--paper-dark);
+  border-radius: var(--radius-md);
   padding: 14px 16px;
   cursor: pointer;
   transition: all 0.2s;
 }
 .time-slot.active {
-  border-color: #4299e1;
-  background: #ebf8ff;
+  border-color: var(--gold);
+  background: var(--gold-glow);
 }
 .slot-label {
+  font-family: 'Noto Serif SC', serif;
   font-size: 15px;
-  font-weight: 500;
-  color: #333;
+  font-weight: 600;
+  color: var(--text-primary);
   margin-bottom: 4px;
+  letter-spacing: 1px;
 }
 .slot-desc {
   font-size: 12px;
-  color: #999;
+  color: var(--text-tertiary);
+}
+
+/* ---- Picker 样式覆盖 ---- */
+:deep(.van-picker__cancel), :deep(.van-picker__confirm) {
+  color: var(--gold);
+  font-family: 'Noto Serif SC', serif;
 }
 </style>

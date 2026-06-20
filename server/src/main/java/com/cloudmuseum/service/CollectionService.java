@@ -127,6 +127,7 @@ public class CollectionService {
         if (collection.getCoverImage() != null) existing.setCoverImage(collection.getCoverImage());
         if (collection.getImages() != null) existing.setImages(collection.getImages());
         if (collection.getVideoUrl() != null) existing.setVideoUrl(collection.getVideoUrl());
+        if (collection.getModelUrl() != null) existing.setModelUrl(collection.getModelUrl());
         if (collection.getStatus() != null) existing.setStatus(collection.getStatus());
         if (collection.getIsFeatured() != null) existing.setIsFeatured(collection.getIsFeatured());
         existing.setUpdateTime(LocalDateTime.now());

@@ -3,14 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>云博物馆</title>
+  <meta name="theme-color" content="#2C2C2C">
+  <title>陕忆·云博</title>
+  <!-- Google Fonts — Noto Serif SC 宋体用于标题，衬线文化感 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { width: 100%; min-height: 100vh; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; }
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      font-family: 'Noto Serif SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    /* 滚动条美化 */
+    ::-webkit-scrollbar { width: 0; height: 0; }
   </style>
 </head>
 <body>
   <div id="app"></div>
   <script type="module" src="/src/main.js"></script>
+  <!-- WebXR 兼容补丁：非 WebXR 设备下避免 Three.js AR 渲染器崩溃 -->
+  <script>
+    if (typeof navigator !== 'undefined' && !('xr' in navigator)) {
+      navigator.xr = {
+        isSessionSupported: function () { return Promise.resolve(false); },
+        requestSession: function () { return Promise.reject(new Error('WebXR not supported')); },
+        addEventListener: function () {},
+        removeEventListener: function () {},
+        dispatchEvent: function () { return true; }
+      };
+    }
+  </script>
 </body>
 </html>

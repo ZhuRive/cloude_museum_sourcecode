@@ -45,6 +45,9 @@ public class Collection {
     @Column(columnDefinition = "TEXT")
     private String images;
 
+    @Column(name = "model_url", length = 500)
+    private String modelUrl;
+
     @Column(name = "video_url", length = 500)
     private String videoUrl;
 

@@ -52,9 +52,8 @@ jwt:
   expiration: 86400000 # 24小时 (毫秒)
 
 # ========== DeepSeek AI 配置 ==========
-# 替换为你的 DeepSeek API Key（支持环境变量覆盖）
 deepseek:
-  api-key: sk-5b8e35d0616b43839fa6ed1cd15225f6
+  api-key: sk-3ed70c268a5c41eca9e8989340c3d6b9
   base-url: https://api.deepseek.com/v1
   model: deepseek-chat
 
