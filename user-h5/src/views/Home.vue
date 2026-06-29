@@ -86,7 +86,6 @@
 
     <!-- 底部安全区 -->
     <div class="bottom-safe"></div>
-    <TabBar />
   </div>
 </template>
 
@@ -94,8 +93,6 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import request from '@/api/index'
-import TabBar from '@/components/TabBar.vue'
-
 const router = useRouter()
 const categories = ref([])
 const featured = ref([])

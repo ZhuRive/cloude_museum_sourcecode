@@ -83,7 +83,6 @@
     </van-dialog>
 
     <div class="bottom-safe"></div>
-    <TabBar />
   </div>
 </template>
 
@@ -91,8 +90,6 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { showToast } from 'vant'
-import TabBar from '@/components/TabBar.vue'
-
 const router = useRouter()
 const showLogoutDialog = ref(false)
 

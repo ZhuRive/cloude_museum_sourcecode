@@ -104,6 +104,7 @@ let abortController = null
 
 watch(() => props.visible, async (val) => {
   if (val) {
+    refreshVoices()
     messages.value = []
     await nextTick()
     startGuide()
@@ -243,17 +244,102 @@ function scrollToBottom() {
   })
 }
 
+/* ============================================
+   语音播报 — 跨浏览器兼容实现
+   ============================================ */
+
+/** 是否已执行过语音引擎预热 */
+let speechWarmedUp = false
+
+/**
+ * 预热 SpeechSynthesis（Chrome 需要先"唤醒"引擎）
+ * 在用户首次点击语音按钮前提前初始化
+ */
+function warmupSpeech() {
+  if (speechWarmedUp || !('speechSynthesis' in window)) return
+  speechWarmedUp = true
+  try {
+    // Chrome bug: 必须 speak 一个空 utterance 来激活引擎
+    const dummy = new SpeechSynthesisUtterance('')
+    dummy.volume = 0
+    window.speechSynthesis.speak(dummy)
+    window.speechSynthesis.cancel()
+  } catch {
+    // 静默失败 — 不影响主功能
+  }
+}
+
+/**
+ * 获取系统可用的中文语音
+ */
+function getChineseVoice() {
+  if (!('speechSynthesis' in window)) return null
+  const voices = window.speechSynthesis.getVoices()
+  // 优先选 zh-CN，其次 zh，最后任意
+  return voices.find(v => v.lang === 'zh-CN')
+    || voices.find(v => v.lang.startsWith('zh'))
+    || null
+}
+
 function speak(text) {
   if (!('speechSynthesis' in window)) {
     showToast('当前浏览器不支持语音播报')
     return
   }
+
+  // 先取消正在播放的任何语音
   window.speechSynthesis.cancel()
-  const utterance = new SpeechSynthesisUtterance(text)
-  utterance.lang = 'zh-CN'
-  utterance.rate = 1.0
-  utterance.pitch = 1.0
-  window.speechSynthesis.speak(utterance)
+
+  // Chrome bug 修复: 首次使用时先预热引擎
+  warmupSpeech()
+
+  // Chrome 在某些系统上需要短暂延迟才能正常发声
+  setTimeout(() => {
+    // 再次取消（防止 warmup 残留）
+    window.speechSynthesis.cancel()
+
+    const utterance = new SpeechSynthesisUtterance(text)
+    utterance.lang = 'zh-CN'
+    utterance.rate = 1.0
+    utterance.pitch = 1.0
+    utterance.volume = 1.0
+
+    // 尝试设置中文语音
+    const zhVoice = getChineseVoice()
+    if (zhVoice) {
+      utterance.voice = zhVoice
+    }
+
+    // 错误处理
+    utterance.onerror = (e) => {
+      if (e.error !== 'canceled' && e.error !== 'interrupted') {
+        console.warn('语音播报出错:', e.error)
+      }
+    }
+
+    // 播报结束
+    utterance.onend = () => {
+      // 可以在这里恢复 UI 状态（目前不需要）
+    }
+
+    window.speechSynthesis.speak(utterance)
+  }, 100)
+}
+
+/**
+ * 强制刷新语音列表（某些浏览器需要）
+ * 页面加载时和首次呼出面板时调用
+ */
+function refreshVoices() {
+  if ('speechSynthesis' in window) {
+    // getVoices 在 Chrome 中首次返回空数组，需要等待 voiceschanged
+    const voices = window.speechSynthesis.getVoices()
+    if (voices.length === 0) {
+      window.speechSynthesis.onvoiceschanged = () => {
+        window.speechSynthesis.onvoiceschanged = null
+      }
+    }
+  }
 }
 
 function copyText(text) {
@@ -271,10 +357,20 @@ function abort() {
   }
 }
 
-onUnmounted(() => abort())
+onUnmounted(() => {
+  abort()
+  // 组件销毁时停止语音
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel()
+  }
+})
 
 function handleClose() {
   abort()
+  // 关闭面板时停止语音
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel()
+  }
   emit('close')
 }
 </script>

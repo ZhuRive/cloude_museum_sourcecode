@@ -75,19 +75,21 @@ const page = ref(1)
 const loading = ref(false)
 const finished = ref(false)
 const refreshing = ref(false)
+/** 防止重复加载 */
+let loadingLock = false
 
 const handleSearch = () => {
   page.value = 1
   finished.value = false
   list.value = []
-  onLoad()
+  if (!loadingLock) onLoad()
 }
 
 const handleTabChange = () => {
   page.value = 1
   finished.value = false
   list.value = []
-  onLoad()
+  if (!loadingLock) onLoad()
 }
 
 const loadData = async () => {
@@ -99,6 +101,9 @@ const loadData = async () => {
 }
 
 const onLoad = async () => {
+  if (loadingLock) return
+  loadingLock = true
+  loading.value = true
   try {
     const data = await loadData()
     list.value = page.value === 1 ? data.list : [...list.value, ...data.list]
@@ -108,6 +113,7 @@ const onLoad = async () => {
     console.error(e)
   } finally {
     loading.value = false
+    loadingLock = false
     refreshing.value = false
   }
 }
@@ -116,7 +122,7 @@ const onRefresh = () => {
   page.value = 1
   finished.value = false
   list.value = []
-  onLoad()
+  if (!loadingLock) onLoad()
 }
 
 onMounted(async () => {

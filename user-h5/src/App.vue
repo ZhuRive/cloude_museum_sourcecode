@@ -1,8 +1,33 @@
 <template>
-  <router-view />
+  <div class="app-root" @touchmove="onTouchMove">
+    <router-view />
+    <TabBar v-if="showTabBar" />
+    <SideMenu />
+  </div>
 </template>
 
 <script setup>
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+import TabBar from '@/components/TabBar.vue'
+import SideMenu from '@/components/SideMenu.vue'
+
+const route = useRoute()
+
+/** 展示底部 TabBar — 根据路由 meta.showTab 控制 */
+const showTabBar = computed(() => route.meta?.showTab === true)
+
+/**
+ * 全局 touchmove 阻止侧滑返回（浏览器手势）
+ * 只在非可滚动元素上阻止默认行为
+ */
+const onTouchMove = (e) => {
+  const touch = e.touches[0]
+  if (touch && touch.clientX < 15) {
+    // 从屏幕左边缘开始的滑动 — 阻止浏览器返回手势
+    e.preventDefault()
+  }
+}
 </script>
 
 <style>
@@ -89,12 +114,22 @@
 }
 
 /* ---- 全局样式 ---- */
+html, body {
+  overscroll-behavior-x: none;
+  touch-action: pan-y pinch-zoom;
+}
 body {
   background: var(--bg);
   color: var(--text-primary);
   font-size: 14px;
   line-height: 1.6;
   font-weight: 400;
+  margin: 0;
+  padding: 0;
+}
+.app-root {
+  position: relative;
+  min-height: 100vh;
 }
 
 /* ---- 金色底部装饰线（全局） ---- */
@@ -107,6 +142,7 @@ body::after {
   height: 2px;
   background: linear-gradient(90deg, transparent, var(--gold), transparent);
   z-index: 9999;
+  pointer-events: none;
 }
 
 /* ---- 通用标题（衬线宋体） ---- */

@@ -29,6 +29,10 @@ public interface CollectionRepository extends JpaRepository<Collection, Long> {
     @Query("SELECT c FROM Collection c WHERE c.isDeleted = 0 AND (c.name LIKE %:keyword% OR c.description LIKE %:keyword%)")
     Page<Collection> searchByKeyword(@Param("keyword") String keyword, Pageable pageable);
 
+    // 在指定分类下搜索藏品
+    @Query("SELECT c FROM Collection c WHERE c.isDeleted = 0 AND c.categoryId = :categoryId AND (c.name LIKE %:keyword% OR c.description LIKE %:keyword%)")
+    Page<Collection> searchByKeywordAndCategory(@Param("keyword") String keyword, @Param("categoryId") Long categoryId, Pageable pageable);
+
     // 获取所有未删除藏品（不分页，用于管理端列表）
     List<Collection> findByIsDeletedOrderByCreateTimeDesc(Integer isDeleted);
 }

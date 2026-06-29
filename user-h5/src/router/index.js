@@ -27,7 +27,7 @@ const routes = [
     path: '/reservation',
     name: 'Reservation',
     component: () => import('@/views/Reservation.vue'),
-    meta: { title: '预约参观' }
+    meta: { title: '预约参观', showTab: true }
   },
   {
     path: '/login',
@@ -45,7 +45,7 @@ const routes = [
     path: '/my/reservations',
     name: 'MyReservations',
     component: () => import('@/views/MyReservations.vue'),
-    meta: { title: '我的预约' }
+    meta: { title: '我的预约', showTab: true }
   }
 ]
 

@@ -32,7 +32,10 @@ public class CollectionService {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createTime"));
 
         Page<Collection> collectionPage;
-        if (keyword != null && !keyword.isEmpty()) {
+        boolean hasKeyword = keyword != null && !keyword.isEmpty();
+        if (hasKeyword && categoryId != null) {
+            collectionPage = collectionRepository.searchByKeywordAndCategory(keyword, categoryId, pageable);
+        } else if (hasKeyword) {
             collectionPage = collectionRepository.searchByKeyword(keyword, pageable);
         } else if (categoryId != null) {
             collectionPage = collectionRepository.findByCategoryIdAndIsDeleted(categoryId, 0, pageable);
