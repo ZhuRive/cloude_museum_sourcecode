@@ -113,6 +113,14 @@ application-local.properties
 application-dev.properties
 
 # ===================
+# 项目特定 - 不提交到 GitHub 仓库
+# ===================
+memory/
+scripts/
+参赛文档/
+ppt-images/
+
+# ===================
 # Claude/AI 辅助工具
 # ===================
 .claude/
